@@ -1,3 +1,9 @@
+## 0.3.0 (2024-12-13)
+
+### Feat
+
+- **config**: integrate dotenv and typeorm configurations for environment management
+
 ## 0.2.0 (2024-12-12)
 
 ### Feat
