@@ -8,7 +8,7 @@ import { UserModule } from '../user/user.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: join(process.cwd(), "env")
+      envFilePath: join(process.cwd(), ".env")
     }),
     TypeOrmModule.forRoot(TypeOrmConfig()),
     UserModule

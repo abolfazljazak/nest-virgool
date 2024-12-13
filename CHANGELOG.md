@@ -1,3 +1,10 @@
+## 0.4.0 (2024-12-13)
+
+### Feat
+
+- **user**: add User and Profile modules with entities and related components
+- **commin**: add BaseEntity abstract class for shared entity properties
+
 ## 0.3.0 (2024-12-13)
 
 ### Feat
