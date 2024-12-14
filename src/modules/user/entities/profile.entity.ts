@@ -1,6 +1,6 @@
+import { BaseEntity } from "src/common/abstracts/base.entity";
 import { EntityNames } from "src/common/enum/entity.enum";
-import { BaseEntity, Column, Entity } from "typeorm";
-import { Url } from "url";
+import { Column, Entity } from "typeorm";
 
 @Entity(EntityNames.Profile)
 export class ProfileEntity extends BaseEntity {
