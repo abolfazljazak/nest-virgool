@@ -1,3 +1,9 @@
+## 0.5.0 (2024-12-14)
+
+### Feat
+
+- **auth**: introduce authentication module with user existence endpoint
+
 ## 0.4.0 (2024-12-13)
 
 ### Feat
