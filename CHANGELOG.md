@@ -1,3 +1,9 @@
+## 0.6.0 (2024-12-15)
+
+### Feat
+
+- **auth**: Complete `userExistence` method and add supporting methods
+
 ## 0.5.0 (2024-12-14)
 
 ### Feat
