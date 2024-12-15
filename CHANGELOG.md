@@ -1,3 +1,9 @@
+## 0.7.0 (2024-12-16)
+
+### Feat
+
+- **common**: Add custom error messages for validation and authentication
+
 ## 0.6.0 (2024-12-15)
 
 ### Feat
