@@ -1,13 +1,14 @@
 import { EntityNames } from "src/common/enum/entity.enum";
-import { BaseEntity, Column, Entity, OneToOne } from "typeorm";
+import { Column, Entity, OneToOne } from "typeorm";
 import { UserEntity } from "./user.entity";
+import { BaseEntity } from "src/common/abstracts/base.entity";
 
 @Entity(EntityNames.Otp)
 export class OtpEntity extends BaseEntity {
     @Column()
     code: string
     @Column()
-    expriseIn: string
+    expriseIn: Date
     @Column()
     userId: number
     @OneToOne(() => UserEntity, user => user.otp, {onDelete: "CASCADE"})
