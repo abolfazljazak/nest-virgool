@@ -1,3 +1,9 @@
+## 0.8.0 (2024-12-16)
+
+### Feat
+
+- **otp**: Add OTP relation to UserEntity and create OtpEntity
+
 ## 0.7.0 (2024-12-16)
 
 ### Feat
