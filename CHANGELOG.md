@@ -1,3 +1,14 @@
+## 0.9.0 (2024-12-17)
+
+### Feat
+
+- **auth**: Complete login and register methods with OTP functionality
+
+### Refactor
+
+- **modules**: Enhance UserModule and AuthModule structure
+- **entities**: Update OtpEntity and UserEntity structure
+
 ## 0.8.0 (2024-12-16)
 
 ### Feat
