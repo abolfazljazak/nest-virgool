@@ -1,3 +1,9 @@
+## 0.10.0 (2024-12-17)
+
+### Feat
+
+- **auth**: Generate default username during user registration
+
 ## 0.9.0 (2024-12-17)
 
 ### Feat
