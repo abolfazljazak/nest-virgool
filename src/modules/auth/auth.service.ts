@@ -13,6 +13,8 @@ import { UserEntity } from "../user/entities/user.entity";
 import { Repository } from "typeorm";
 import { ProfileEntity } from "../user/entities/profile.entity";
 import { AuthMessage, BadRequestMessage } from "src/common/enum/message.enum";
+import { OtpEntity } from "../user/entities/otp.entity";
+import { randomInt } from "crypto";
 
 @Injectable()
 export class AuthService {
@@ -20,7 +22,9 @@ export class AuthService {
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
     @InjectRepository(ProfileEntity)
-    private profileRepository: Repository<ProfileEntity>
+    private profileRepository: Repository<ProfileEntity>,
+    @InjectRepository(OtpEntity)
+    private otpRepository: Repository<OtpEntity>
   ) {}
   userExistence(authDto: AuthDto) {
     const { type, username, method } = authDto;
@@ -37,15 +41,58 @@ export class AuthService {
   }
 
   async login(method: AuthMethod, username: string) {
-    const validUsername = this.usernameValidator(method, username)
-    let user: UserEntity = await this.checkExistUser(method, username)
+    const validUsername = this.usernameValidator(method, username);
+    let user: UserEntity = await this.checkExistUser(method, validUsername);
     if (!user) throw new UnauthorizedException(AuthMessage.NotFoundAccount);
+    const otp = await this.saveOtp(user.id);
+    return {
+      code: otp.code,
+    };
   }
 
   async register(method: AuthMethod, username: string) {
     const validUsername = this.usernameValidator(method, username);
-    let user: UserEntity = await this.checkExistUser(method, username)
+    let user: UserEntity = await this.checkExistUser(method, validUsername);
     if (user) throw new ConflictException(AuthMessage.AlreadyExistAccount);
+    user = this.userRepository.create({
+      [method]: username,
+    });
+    user = await this.userRepository.save(user);
+    const otp = await this.saveOtp(user.id);
+    return {
+      code: otp.code,
+    };
+  }
+
+  async saveOtp(userId: number) {
+    const code = randomInt(10000, 99999).toString();
+    const expiresIn = new Date(Date.now() + 1000 * 60 * 2);
+    let otp = await this.otpRepository.findOneBy({ userId: userId });
+    let existOtp = false;
+    if (otp) {
+      existOtp = true;
+      otp.code = code;
+      otp.expriseIn = expiresIn;
+    } else {
+      otp = this.otpRepository.create({
+        code: code,
+        expriseIn: expiresIn,
+        userId: userId,
+      });
+    }
+
+    otp = await this.otpRepository.save(otp);
+    if (!existOtp) {
+      await this.userRepository.update(
+        { id: userId },
+        {
+          otpId: otp.id,
+        }
+      );
+    }
+
+    //Send [SMS, Email] Otp Code
+    return otp;
   }
 
   async checkExistUser(method: AuthMethod, username: string) {
@@ -59,7 +106,7 @@ export class AuthService {
     } else {
       throw new BadRequestException(BadRequestMessage.InValidLoginData);
     }
-    return user
+    return user;
   }
 
   usernameValidator(method: AuthMethod, username: string) {
