@@ -5,7 +5,7 @@ import { OtpEntity } from "./otp.entity";
 
 @Entity(EntityNames.User)
 export class UserEntity extends BaseEntity {
-    @Column({unique: true})
+    @Column({nullable: true})
     username: string
 
     @Column({unique: true, nullable: true})
