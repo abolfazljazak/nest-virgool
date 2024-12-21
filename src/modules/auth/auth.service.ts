@@ -58,6 +58,8 @@ export class AuthService {
       [method]: username,
     });
     user = await this.userRepository.save(user);
+    user.username = `m_${user.id}`
+    await this.userRepository.save(user);
     const otp = await this.saveOtp(user.id);
     return {
       code: otp.code,
