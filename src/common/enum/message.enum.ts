@@ -11,3 +11,7 @@ export enum AuthMessage {
 export enum NotFoundMessage {}
 
 export enum ValidationMessage {}
+
+export enum PublicMessage {
+  sentOtp = "کد یکبار مصرف با موفقیت ارسال شد"
+}
