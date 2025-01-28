@@ -15,6 +15,9 @@ import { ProfileEntity } from "../user/entities/profile.entity";
 import { AuthMessage, BadRequestMessage } from "src/common/enum/message.enum";
 import { OtpEntity } from "../user/entities/otp.entity";
 import { randomInt } from "crypto";
+import { TokenService } from "./tokens.service";
+import { Response } from "express";
+import { CookieKeys } from "src/common/enum/cookie.enum";
 
 @Injectable()
 export class AuthService {
@@ -24,7 +27,8 @@ export class AuthService {
     @InjectRepository(ProfileEntity)
     private profileRepository: Repository<ProfileEntity>,
     @InjectRepository(OtpEntity)
-    private otpRepository: Repository<OtpEntity>
+    private otpRepository: Repository<OtpEntity>,
+    private tokenService: TokenService
   ) {}
   userExistence(authDto: AuthDto) {
     const { type, username, method } = authDto;
@@ -45,8 +49,10 @@ export class AuthService {
     let user: UserEntity = await this.checkExistUser(method, validUsername);
     if (!user) throw new UnauthorizedException(AuthMessage.NotFoundAccount);
     const otp = await this.saveOtp(user.id);
+    const token = this.tokenService.createOtpToken({userId: user.id })
     return {
       code: otp.code,
+      token
     };
   }
 
@@ -61,9 +67,19 @@ export class AuthService {
     user.username = `m_${user.id}`
     await this.userRepository.save(user);
     const otp = await this.saveOtp(user.id);
+    const token = this.tokenService.createOtpToken({userId: user.id })
     return {
       code: otp.code,
+      token,
     };
+  }
+
+  async sendResponse(res: Response, result: any) {
+    const {token, code} = result
+    res.cookie(CookieKeys.OTP, token, {httpOnly: true})
+    res.json({
+      code
+    })
   }
 
   async saveOtp(userId: number) {
