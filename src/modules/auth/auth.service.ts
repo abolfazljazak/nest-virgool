@@ -26,6 +26,7 @@ import { Request, Response } from "express";
 import { CookieKeys } from "src/common/enum/cookie.enum";
 import { AuthResponse } from "./types/response";
 import { REQUEST } from "@nestjs/core";
+import { throwError } from "rxjs";
 
 @Injectable({ scope: Scope.REQUEST })
 export class AuthService {
@@ -132,7 +133,17 @@ export class AuthService {
   async checkOtp(code: string) {
     const token = this.request.cookies?.[CookieKeys.OTP]
     if (token) throw new UnauthorizedException(AuthMessage.ExpiredCode)
-    return this.tokenService.verifyOtpToken(token)
+    const {userId} = this.tokenService.verifyOtpToken(token)
+    const otp = await this.otpRepository.findOneBy({userId})
+    if (!otp) throw new UnauthorizedException(AuthMessage.LoginAgain)
+    const now = new Date()
+    if (otp.expriseIn < now) throw new UnauthorizedException(AuthMessage.ExpiredCode)
+    if (otp.code !== code) throw new UnauthorizedException(AuthMessage.TryAgain)
+    
+      return {
+        message: PublicMessage.LoggedIn
+      }
+
   }
 
   async checkExistUser(method: AuthMethod, username: string) {
