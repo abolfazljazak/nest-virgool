@@ -145,7 +145,6 @@ export class AuthService {
         message: PublicMessage.LoggedIn,
         accessToken: accessToken
       }
-
   }
 
   async checkExistUser(method: AuthMethod, username: string) {
@@ -161,6 +160,13 @@ export class AuthService {
     }
     return user;
   }
+
+  async validateAccessToken(token: string) {
+    const { userId } = this.tokenService.verifyAccessToken(token)
+    const user = await this.userRepository.findOneBy({id: userId})
+    if (!user) throw new UnauthorizedException(AuthMessage.LoginAgain)
+    return user
+  }    
 
   usernameValidator(method: AuthMethod, username: string) {
     switch (method) {
