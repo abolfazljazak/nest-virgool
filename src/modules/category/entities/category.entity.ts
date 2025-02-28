@@ -1,5 +1,11 @@
-import { Entity } from "typeorm";
+import { EntityNames } from "src/common/enum/entity.enum";
+import { BaseEntity, Column, Entity } from "typeorm";
 
-@Entity()
-export class Category {}
+@Entity(EntityNames.Category)
+export class CategoryEntity extends BaseEntity {
+  @Column()
+  title: string;
 
+  @Column({ nullable: true })
+  priority: number
+}
