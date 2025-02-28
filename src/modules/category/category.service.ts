@@ -1,10 +1,10 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { ConflictException, Inject, Injectable } from "@nestjs/common";
 import { CreateCategoryDto } from "./dto/create-category.dto";
 import { UpdateCategoryDto } from "./dto/update-category.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CategoryEntity } from "./entities/category.entity";
 import { Repository } from "typeorm";
-import { PublicMessage } from "src/common/enum/message.enum";
+import { ConflictMessage, PublicMessage } from "src/common/enum/message.enum";
 
 @Injectable()
 export class CategoryService {
@@ -13,20 +13,29 @@ export class CategoryService {
     private categoryRepository: Repository<CategoryEntity>
   ) {}
   async create(createCategoryDto: CreateCategoryDto) {
-    const { title, priority } = createCategoryDto;
+    let { title, priority } = createCategoryDto;
+    title = await this.checkExistAndResolveTitle(title);
     const category = this.categoryRepository.create({
       title,
       priority,
     });
     await this.categoryRepository.save(category);
     return {
-      message: PublicMessage.Created
-    }
+      message: PublicMessage.Created,
+    };
+  }
+
+  async checkExistAndResolveTitle(title: string) {
+    title = title?.trim()?.toLocaleLowerCase();
+    const cateory = await this.categoryRepository.findOneBy({ title });
+    if (cateory) throw new ConflictException(ConflictMessage.CategoryTitle);
+    return title;
   }
 
   findAll() {
     return `This action returns all category`;
-  }z
+  }
+  z;
 
   findOne(id: number) {
     return `This action returns a #${id} category`;
