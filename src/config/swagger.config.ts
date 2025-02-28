@@ -7,7 +7,7 @@ export function SwaggerConfigInit(app: INestApplication) {
     .setTitle("virgool")
     .setDescription("backEnd of virgool website")
     .setVersion("v0.0.1")
-    .addBearerAuth(SwaggerAuthConfig())
+    .addBearerAuth(SwaggerAuthConfig(), "Authorization")
     .build();
 
   const swaggerDocument = SwaggerModule.createDocument(app, document);
