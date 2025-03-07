@@ -12,7 +12,12 @@ export enum AuthMessage {
   LoginRequired = "وارد حساب کاربری خود شوید.",
 }
 
-export enum NotFoundMessage {}
+export enum NotFoundMessage {
+  NotFound = "موردی یافت نشد.",
+  NotFoundCategory = "دسته بندی یافت نشد.",
+  NotFoundPost = "مقاله ای یافت نشد.",
+  NotFoundUser = "کاربری یافت نشد.",
+}
 
 export enum ValidationMessage {}
 
@@ -20,6 +25,9 @@ export enum PublicMessage {
   sendOtp = "کد یکبار مصرف با موفقیت ارسال شد.",
   LoggedIn = "با موفقیت وارد حساب کاربری خود شدید.",
   Created = "با موفقت ایجاد شد.",
+  Deleted = "با موفقت حذف شد.",
+  Updated = "با موفقت به روز رسانی شد.",
+  Inserted = "با موفقت درج شد.",
 }
 
 export enum ConflictMessage {
