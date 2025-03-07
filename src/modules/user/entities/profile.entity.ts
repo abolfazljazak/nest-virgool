@@ -25,4 +25,7 @@ export class ProfileEntity extends BaseEntity {
 
     @Column({nullable: true})
     linkedIn: string
+
+    @Column({nullable: true})
+    x_profile: string
 }
