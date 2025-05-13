@@ -26,6 +26,7 @@ import { Request, Response } from "express";
 import { CookieKeys } from "src/common/enum/cookie.enum";
 import { AuthResponse } from "./types/response";
 import { REQUEST } from "@nestjs/core";
+import { CookiesOptionsToken } from "src/common/utils/cookie.util";
 
 @Injectable({ scope: Scope.REQUEST })
 export class AuthService {
@@ -90,12 +91,9 @@ export class AuthService {
 
   async sendResponse(res: Response, result: AuthResponse) {
     const { token, code } = result;
-    res.cookie(CookieKeys.OTP, token, {
-      httpOnly: true,
-      expires: new Date(Date.now() + (1000 * 60 * 2)),
-    });
+    res.cookie(CookieKeys.OTP, token, CookiesOptionsToken());
     res.json({
-      message: PublicMessage.sendOtp,
+      message: PublicMessage.SendOtp,
       code: code,
     });
   }
