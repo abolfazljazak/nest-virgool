@@ -2,6 +2,7 @@ import { BaseEntity } from "src/common/abstracts/base.entity";
 import { EntityNames } from "src/common/enum/entity.enum";
 import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, UpdateDateColumn } from "typeorm";
 import { OtpEntity } from "./otp.entity";
+import { ProfileEntity } from "./profile.entity";
 
 @Entity(EntityNames.User)
 export class UserEntity extends BaseEntity {
@@ -29,4 +30,12 @@ export class UserEntity extends BaseEntity {
     @OneToOne(() => OtpEntity, otp => otp.user, {nullable: true})
     @JoinColumn()
     otp: OtpEntity
+
+    
+    @OneToOne(() => ProfileEntity, profile => profile.user, { nullable: true })
+    profile: ProfileEntity
+
+    
+    @Column({ nullable: true })
+    profileId : number
 }

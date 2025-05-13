@@ -1,12 +1,16 @@
 import { BaseEntity } from "src/common/abstracts/base.entity";
 import { EntityNames } from "src/common/enum/entity.enum";
-import { Column, Entity } from "typeorm";
+import { Column, Entity, OneToOne } from "typeorm";
+import { UserEntity } from "./user.entity";
 
 @Entity(EntityNames.Profile)
 export class ProfileEntity extends BaseEntity {
     
     @Column()
     nick_name: string
+    
+    @Column()
+    userId: number
 
     @Column({nullable: true})
     bio: string
@@ -28,4 +32,7 @@ export class ProfileEntity extends BaseEntity {
 
     @Column({nullable: true})
     x_profile: string
+
+    @OneToOne(() => UserEntity, user => user.profile, { onDelete: "CASCADE" })
+    user: UserEntity
 }
