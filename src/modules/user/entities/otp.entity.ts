@@ -5,12 +5,14 @@ import { BaseEntity } from "src/common/abstracts/base.entity";
 
 @Entity(EntityNames.Otp)
 export class OtpEntity extends BaseEntity {
-    @Column()
-    code: string
-    @Column()
-    expriseIn: Date
-    @Column()
-    userId: number
-    @OneToOne(() => UserEntity, user => user.otp, {onDelete: "CASCADE"})
-    user: UserEntity
+  @Column()
+  code: string;
+  @Column()
+  expriseIn: Date;
+  @Column()
+  userId: number;
+  @OneToOne(() => UserEntity, (user) => user.otp, { onDelete: "CASCADE" })
+  user: UserEntity;
+  @Column({ nullable: true })
+  method: string;
 }
