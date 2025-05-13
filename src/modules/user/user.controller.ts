@@ -15,6 +15,7 @@ import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
 import { multerDestination } from "src/common/utils/multer.util";
 import { AuthGuard } from "../auth/guards/auth.guard";
+import { ProfileImages } from "./types/files";
 
 @Controller("user")
 @ApiTags("User")
@@ -46,7 +47,7 @@ export class UserController {
         validators: [],
       })
     )
-    files: any,
+    files: ProfileImages,
     @Body() profileDto: ProfileDto
   ) {
     return this.userService.changeProfile(files, profileDto);

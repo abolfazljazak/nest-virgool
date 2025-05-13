@@ -9,6 +9,7 @@ import { ProfileDto } from "./dto/profile.dto";
 import { ApiBadGatewayResponse } from "@nestjs/swagger";
 import { isDate } from "class-validator";
 import { Gender } from "./enums/gender.enum";
+import { ProfileImages } from "./types/files";
 
 @Injectable({ scope: Scope.REQUEST })
 export class UserService {
@@ -20,10 +21,18 @@ export class UserService {
     @Inject(REQUEST) private request: Request
   ) {}
 
-  async changeProfile(files: any, profileDto: ProfileDto) {
+  async changeProfile(files: ProfileImages, profileDto: ProfileDto) {
+    if (files?.image_profile?.length > 0) {
+      let [image] = files.image_profile
+      profileDto.image_profile = image.path
+    } 
+    if (files?.bg_image?.length > 0) {
+      let [image] = files?.bg_image
+      profileDto.bg_image = image.path
+    } 
     const { id: userId, profileId } = this.request.user;
     let profile = await this.profileRepository.findOneBy({ userId });
-    const { bio, birthday, gender, linkedIn, nick_name, x_profile } =
+    const { bio, birthday, gender, linkedIn, nick_name, x_profile, image_profile, bg_image } =
       profileDto;
     if (!profile) {
         if (bio) profile.bio = bio
@@ -31,6 +40,8 @@ export class UserService {
         if (gender && Object.values(Gender as any).includes(gender)) profile.gender = gender
         if (linkedIn) profile.linkedIn = linkedIn
         if (x_profile) profile.x_profile = x_profile
+        if (image_profile) profile.image_profile = image_profile
+        if (bg_image) profile.bg_image = bg_image
     } else {
       this.profileRepository.create({
         bio,
