@@ -61,7 +61,7 @@ export class AuthService {
     const validUsername = this.usernameValidator(method, username);
     let user: UserEntity = await this.checkExistUser(method, validUsername);
     if (!user) throw new UnauthorizedException(AuthMessage.NotFoundAccount);
-    const otp = await this.saveOtp(user.id);
+    const otp = await this.saveOtp(user.id, method);
     const token = this.tokenService.createOtpToken({ userId: user.id });
     return {
       code: otp.code,
@@ -79,9 +79,7 @@ export class AuthService {
     user = await this.userRepository.save(user);
     user.username = `m_${user.id}`;
     await this.userRepository.save(user);
-    const otp = await this.saveOtp(user.id);
-    otp.method = method;
-    await this.otpRepository.save(otp)
+    const otp = await this.saveOtp(user.id, method);
     const token = this.tokenService.createOtpToken({ userId: user.id });
     return {
       code: otp.code,
@@ -98,7 +96,7 @@ export class AuthService {
     });
   }
 
-  async saveOtp(userId: number) {
+  async saveOtp(userId: number, method: AuthMethod) {
     const code = randomInt(10000, 99999).toString();
     const expiresIn = new Date(Date.now() + 1000 * 60 * 2);
     let otp = await this.otpRepository.findOneBy({ userId: userId });
@@ -107,11 +105,13 @@ export class AuthService {
       existOtp = true;
       otp.code = code;
       otp.expriseIn = expiresIn;
+      otp.method = method;
     } else {
       otp = this.otpRepository.create({
         code: code,
         expriseIn: expiresIn,
         userId: userId,
+        method: method,
       });
     }
 
@@ -130,28 +130,36 @@ export class AuthService {
   }
 
   async checkOtp(code: string) {
-    const token = this.request.cookies?.[CookieKeys.OTP]
-    if (token) throw new UnauthorizedException(AuthMessage.ExpiredCode)
-    const {userId} = this.tokenService.verifyOtpToken(token)
-    const otp = await this.otpRepository.findOneBy({userId})
-    if (!otp) throw new UnauthorizedException(AuthMessage.LoginAgain)
-    const now = new Date()
-    if (otp.expriseIn < now) throw new UnauthorizedException(AuthMessage.ExpiredCode)
-    if (otp.code !== code) throw new UnauthorizedException(AuthMessage.TryAgain)
-    const accessToken = this.tokenService.createAccessToken({userId})
+    const token = this.request.cookies?.[CookieKeys.OTP];
+    if (token) throw new UnauthorizedException(AuthMessage.ExpiredCode);
+    const { userId } = this.tokenService.verifyOtpToken(token);
+    const otp = await this.otpRepository.findOneBy({ userId });
+    if (!otp) throw new UnauthorizedException(AuthMessage.LoginAgain);
+    const now = new Date();
+    if (otp.expriseIn < now)
+      throw new UnauthorizedException(AuthMessage.ExpiredCode);
+    if (otp.code !== code)
+      throw new UnauthorizedException(AuthMessage.TryAgain);
+    const accessToken = this.tokenService.createAccessToken({ userId });
     if (otp.method === AuthMethod.Email) {
-      await this.userRepository.update({id: userId}, {
-        verify_email: true
-      })
+      await this.userRepository.update(
+        { id: userId },
+        {
+          verify_email: true,
+        }
+      );
     } else if (otp.method === AuthMethod.Phone) {
-      await this.userRepository.update({id: userId}, {
-        verify_phone: true
-      })
+      await this.userRepository.update(
+        { id: userId },
+        {
+          verify_phone: true,
+        }
+      );
     }
-      return {
-        message: PublicMessage.LoggedIn,
-        accessToken: accessToken
-      }
+    return {
+      message: PublicMessage.LoggedIn,
+      accessToken: accessToken,
+    };
   }
 
   async checkExistUser(method: AuthMethod, username: string) {
@@ -169,11 +177,11 @@ export class AuthService {
   }
 
   async validateAccessToken(token: string) {
-    const { userId } = this.tokenService.verifyAccessToken(token)
-    const user = await this.userRepository.findOneBy({id: userId})
-    if (!user) throw new UnauthorizedException(AuthMessage.LoginAgain)
-    return user
-  }    
+    const { userId } = this.tokenService.verifyAccessToken(token);
+    const user = await this.userRepository.findOneBy({ id: userId });
+    if (!user) throw new UnauthorizedException(AuthMessage.LoginAgain);
+    return user;
+  }
 
   usernameValidator(method: AuthMethod, username: string) {
     switch (method) {
