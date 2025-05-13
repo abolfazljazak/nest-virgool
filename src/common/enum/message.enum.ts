@@ -21,11 +21,13 @@ export enum NotFoundMessage {
 }
 
 export enum ValidationMessage {
-  IvalidImageFormat = "فرمت عکس ارسال شده صحیح نمیباشد.."
+  IvalidImageFormat = "فرمت عکس ارسال شده صحیح نمیباشد.",
+  InvalidEmailFormat = "ایمیل وارد شده صحیح نمیباشد.",
+  InvalidPhoneFormat = "شماره موباید وارد شده صحیح نمیباشد.",
 }
 
 export enum PublicMessage {
-  sendOtp = "کد یکبار مصرف با موفقیت ارسال شد.",
+  SendOtp = "کد یکبار مصرف با موفقیت ارسال شد.",
   LoggedIn = "با موفقیت وارد حساب کاربری خود شدید.",
   Created = "با موفقت ایجاد شد.",
   Deleted = "با موفقت حذف شد.",

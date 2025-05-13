@@ -1,22 +1,29 @@
-import { ApiPropertyOptional } from "@nestjs/swagger";
-import { IsEnum, IsOptional, Length } from "class-validator";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import {
+  IsEmail,
+  IsEnum,
+  IsMobilePhone,
+  IsOptional,
+  Length,
+} from "class-validator";
 import { Gender } from "../enums/gender.enum";
+import { ValidationMessage } from "src/common/enum/message.enum";
 
 export class ProfileDto {
   @ApiPropertyOptional()
-  @Length(5,100)
+  @Length(5, 100)
   @IsOptional()
   nick_name: string;
-  
-  @Length(10,200)
+
+  @Length(10, 200)
   @ApiPropertyOptional({ nullable: true })
   @IsOptional()
   bio: string;
 
-  @ApiPropertyOptional({ nullable: true, format: 'binary' })
+  @ApiPropertyOptional({ nullable: true, format: "binary" })
   image_profile: string;
 
-  @ApiPropertyOptional({ nullable: true, format: 'binary' })
+  @ApiPropertyOptional({ nullable: true, format: "binary" })
   bg_image: string;
 
   @ApiPropertyOptional({ nullable: true, enum: Gender })
@@ -32,4 +39,16 @@ export class ProfileDto {
 
   @ApiPropertyOptional({ nullable: true })
   x_profile: string;
+}
+
+export class ChangeEmailDto {
+  @ApiProperty()
+  @IsEmail({}, { message: ValidationMessage.InvalidEmailFormat })
+  email: string;
+}
+
+export class ChangePhoneDto {
+  @ApiProperty()
+  @IsMobilePhone("fa-IR", {}, { message: ValidationMessage.InvalidPhoneFormat })
+  phone: string;
 }
