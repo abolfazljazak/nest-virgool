@@ -1,22 +1,26 @@
 import { ApiPropertyOptional } from "@nestjs/swagger";
+import { Length } from "class-validator";
+import { Gender } from "../enums/gender.enum";
 
 export class ProfileDto {
-  @ApiPropertyOptional ()
+  @ApiPropertyOptional()
+  @Length(5,100)
   nick_name: string;
-
+  
+  @Length(10,200)
   @ApiPropertyOptional({ nullable: true })
   bio: string;
 
-  @ApiPropertyOptional({ nullable: true })
+  @ApiPropertyOptional({ nullable: true, format: 'binary' })
   image_profile: string;
 
-  @ApiPropertyOptional({ nullable: true })
+  @ApiPropertyOptional({ nullable: true, format: 'binary' })
   bg_image: string;
 
-  @ApiPropertyOptional({ nullable: true })
+  @ApiPropertyOptional({ nullable: true, enum: Gender })
   gender: string;
 
-  @ApiPropertyOptional({ nullable: true })
+  @ApiPropertyOptional({ nullable: true, example: "2004-03-10T21:38:06.879Z" })
   birthday: Date;
 
   @ApiPropertyOptional({ nullable: true })

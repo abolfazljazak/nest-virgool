@@ -26,7 +26,6 @@ import { Request, Response } from "express";
 import { CookieKeys } from "src/common/enum/cookie.enum";
 import { AuthResponse } from "./types/response";
 import { REQUEST } from "@nestjs/core";
-import { throwError } from "rxjs";
 
 @Injectable({ scope: Scope.REQUEST })
 export class AuthService {
