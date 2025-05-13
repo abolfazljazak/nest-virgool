@@ -23,7 +23,7 @@ export enum NotFoundMessage {
 export enum ValidationMessage {
   IvalidImageFormat = "فرمت عکس ارسال شده صحیح نمیباشد.",
   InvalidEmailFormat = "ایمیل وارد شده صحیح نمیباشد.",
-  InvalidPhoneFormat = "شماره موباید وارد شده صحیح نمیباشد.",
+  InvalidPhoneFormat = "شماره موبایل وارد شده صحیح نمیباشد.",
 }
 
 export enum PublicMessage {
@@ -37,5 +37,6 @@ export enum PublicMessage {
 
 export enum ConflictMessage {
   CategoryTitle = "عنوان دسته بندی قبلا ایجاد شده.",
-  Email = "ایمیل وارد شده توسط شخص دیگری استفاده شده."
+  Email = "ایمیل وارد شده توسط شخص دیگری استفاده شده.",
+  Phone = "شمار موبایل وارد شده توسط شخص دیگری استفاده شده.",
 }

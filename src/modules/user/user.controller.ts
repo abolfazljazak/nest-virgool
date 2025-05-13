@@ -13,7 +13,7 @@ import {
 } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { ApiBearerAuth, ApiConsumes, ApiTags } from "@nestjs/swagger";
-import { ChangeEmailDto, ProfileDto } from "./dto/profile.dto";
+import { ChangeEmailDto, ChangePhoneDto, ProfileDto } from "./dto/profile.dto";
 import { SwaggerConsumes } from "src/common/enum/swagger-consumes.enum";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
@@ -74,5 +74,24 @@ export class UserController {
   @Post("verify-email-otp")
   async verifyEmail(@Body() otpDto: CheckOtpDto) {
     return this.userService.verifyEmail(otpDto.code)
+  }
+
+  
+  @Patch("change-phone")
+  async changePhone(@Body() phoneDto: ChangePhoneDto, @Res() res: Response) {
+    const { code, token, message } = await this.userService.changePhone(
+      phoneDto.phone
+    );
+    if (message) return res.json({ message });
+    res.cookie(CookieKeys.PhoneOTP, token, CookiesOptionsToken())
+    res.json({
+      code,
+      message: PublicMessage.SendOtp
+    })
+  }
+
+  @Post("verify-phone-otp")
+  async verifyPhone(@Body() otpDto: CheckOtpDto) {
+    return this.userService.verifyPhone(otpDto.code)
   }
 }
