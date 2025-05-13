@@ -117,8 +117,10 @@ export class UserService {
         message: PublicMessage.Updated,
       };
     }
-    user.new_email = email;
-    const otp = await this.authService.saveOtp(user.id, AuthMethod.Email);
+    await this.userRepository.update({ id }, {
+      new_email: email
+    })
+    const otp = await this.authService.saveOtp(id, AuthMethod.Email);
     const token = this.tokenService.createEmailToken({ email });
     return {
       code: otp.code,
@@ -136,7 +138,6 @@ export class UserService {
       throw new BadRequestException(BadRequestMessage.SometingWrong);
     if (otp.method !== AuthMethod.Email)
       throw new BadRequestException(BadRequestMessage.SometingWrong);
-    const accessToken = this.tokenService.createAccessToken({ userId });
     await this.userRepository.update(
       { id: userId },
       {
@@ -147,7 +148,6 @@ export class UserService {
     );
     return {
       message: PublicMessage.Updated,
-      accessToken,
     };
   }
 

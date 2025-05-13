@@ -4,6 +4,7 @@ import {
   Get,
   ParseFilePipe,
   Patch,
+  Post,
   Put,
   Res,
   UploadedFiles,
@@ -23,6 +24,7 @@ import { Response } from "express";
 import { CookieKeys } from "src/common/enum/cookie.enum";
 import { CookiesOptionsToken } from "src/common/utils/cookie.util";
 import { PublicMessage } from "src/common/enum/message.enum";
+import { CheckOtpDto } from "../auth/dto/auth.dto";
 
 @Controller("user")
 @ApiTags("User")
@@ -67,5 +69,10 @@ export class UserController {
       code,
       message: PublicMessage.SendOtp
     })
+  }
+
+  @Post("verify-email-otp")
+  async verifyEmail(@Body() otpDto: CheckOtpDto) {
+    return this.userService.verifyEmail(otpDto.code)
   }
 }
