@@ -11,7 +11,7 @@ import { Repository } from "typeorm";
 import { ProfileEntity } from "./entities/profile.entity";
 import { REQUEST } from "@nestjs/core";
 import { Request } from "express";
-import { ProfileDto } from "./dto/profile.dto";
+import { ChangeUsernameDto, ProfileDto } from "./dto/profile.dto";
 import { ApiBadGatewayResponse } from "@nestjs/swagger";
 import { isDate } from "class-validator";
 import { Gender } from "./enums/gender.enum";
@@ -117,9 +117,12 @@ export class UserService {
         message: PublicMessage.Updated,
       };
     }
-    await this.userRepository.update({ id }, {
-      new_email: email
-    })
+    await this.userRepository.update(
+      { id },
+      {
+        new_email: email,
+      }
+    );
     const otp = await this.authService.saveOtp(id, AuthMethod.Email);
     const token = this.tokenService.createEmailToken({ email });
     return {
@@ -161,9 +164,12 @@ export class UserService {
         message: PublicMessage.Updated,
       };
     }
-    await this.userRepository.update({ id }, {
-      new_phone: phone
-    })
+    await this.userRepository.update(
+      { id },
+      {
+        new_phone: phone,
+      }
+    );
     const otp = await this.authService.saveOtp(id, AuthMethod.Phone);
     const token = this.tokenService.createPhoneToken({ phone });
     return {
@@ -190,6 +196,22 @@ export class UserService {
         new_phone: null,
       }
     );
+    return {
+      message: PublicMessage.Updated,
+    };
+  }
+
+  async changeUsername(username: string) {
+    const { id } = this.request.user;
+    const user = await this.userRepository.findOneBy({ username });
+    if (user && user?.id !== id) {
+      throw new ConflictException(ConflictMessage.Username);
+    } else if (user && user.id === id) {
+      return {
+        message: PublicMessage.Updated,
+      };
+    }
+    await this.userRepository.update({ id }, { username });
     return {
       message: PublicMessage.Updated,
     };

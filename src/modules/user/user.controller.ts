@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Get,
-  ParseFilePipe,
   Patch,
   Post,
   Put,
@@ -13,11 +12,10 @@ import {
 } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { ApiBearerAuth, ApiConsumes, ApiTags } from "@nestjs/swagger";
-import { ChangeEmailDto, ChangePhoneDto, ProfileDto } from "./dto/profile.dto";
+import { ChangeUsernameDto, ChangeEmailDto, ChangePhoneDto, ProfileDto } from "./dto/profile.dto";
 import { SwaggerConsumes } from "src/common/enum/swagger-consumes.enum";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
-import { diskStorage } from "multer";
-import { multerDestination, multerStorage } from "src/common/utils/multer.util";
+import { multerStorage } from "src/common/utils/multer.util";
 import { AuthGuard } from "../auth/guards/auth.guard";
 import { ProfileImages } from "./types/files";
 import { Response } from "express";
@@ -59,6 +57,7 @@ export class UserController {
   }
 
   @Patch("change-email")
+    @ApiConsumes(SwaggerConsumes.UrlEncoded, SwaggerConsumes.Json)
   async changeEmail(@Body() emailDto: ChangeEmailDto, @Res() res: Response) {
     const { code, token, message } = await this.userService.changeEmail(
       emailDto.email
@@ -72,12 +71,14 @@ export class UserController {
   }
 
   @Post("verify-email-otp")
+    @ApiConsumes(SwaggerConsumes.UrlEncoded, SwaggerConsumes.Json)
   async verifyEmail(@Body() otpDto: CheckOtpDto) {
     return this.userService.verifyEmail(otpDto.code)
   }
 
   
   @Patch("change-phone")
+    @ApiConsumes(SwaggerConsumes.UrlEncoded, SwaggerConsumes.Json)
   async changePhone(@Body() phoneDto: ChangePhoneDto, @Res() res: Response) {
     const { code, token, message } = await this.userService.changePhone(
       phoneDto.phone
@@ -91,7 +92,14 @@ export class UserController {
   }
 
   @Post("verify-phone-otp")
+    @ApiConsumes(SwaggerConsumes.UrlEncoded, SwaggerConsumes.Json)
   async verifyPhone(@Body() otpDto: CheckOtpDto) {
     return this.userService.verifyPhone(otpDto.code)
+  }
+
+  @Patch("change-username")
+    @ApiConsumes(SwaggerConsumes.UrlEncoded, SwaggerConsumes.Json)
+  async changeUsername(usernameDto: ChangeUsernameDto) {
+    return this.userService.changeUsername(usernameDto.username)
   }
 }
