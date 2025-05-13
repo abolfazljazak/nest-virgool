@@ -19,7 +19,9 @@ export enum NotFoundMessage {
   NotFoundUser = "کاربری یافت نشد.",
 }
 
-export enum ValidationMessage {}
+export enum ValidationMessage {
+  IvalidImageFormat = "فرمت عکس ارسال شده صحیح نمیباشد.."
+}
 
 export enum PublicMessage {
   sendOtp = "کد یکبار مصرف با موفقیت ارسال شد.",
