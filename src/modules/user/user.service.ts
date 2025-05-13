@@ -10,6 +10,7 @@ import { ApiBadGatewayResponse } from "@nestjs/swagger";
 import { isDate } from "class-validator";
 import { Gender } from "./enums/gender.enum";
 import { ProfileImages } from "./types/files";
+import { PublicMessage } from "src/common/enum/message.enum";
 
 @Injectable({ scope: Scope.REQUEST })
 export class UserService {
@@ -36,6 +37,7 @@ export class UserService {
       profileDto;
     if (!profile) {
         if (bio) profile.bio = bio
+        if (nick_name) profile.nick_name = nick_name
         if (birthday && isDate(new Date(birthday))) profile.birthday = new Date(birthday) 
         if (gender && Object.values(Gender as any).includes(gender)) profile.gender = gender
         if (linkedIn) profile.linkedIn = linkedIn
@@ -59,6 +61,10 @@ export class UserService {
         { id: userId },
         { profileId: profile.id }
       );
+    }
+
+    return {
+      message: PublicMessage.Updated
     }
   }
 
