@@ -24,11 +24,11 @@ export class UserService {
   async changeProfile(files: ProfileImages, profileDto: ProfileDto) {
     if (files?.image_profile?.length > 0) {
       let [image] = files.image_profile
-      profileDto.image_profile = image.path
+      profileDto.image_profile = image?.path.slice(7)
     } 
     if (files?.bg_image?.length > 0) {
       let [image] = files?.bg_image
-      profileDto.bg_image = image.path
+      profileDto.bg_image = image?.path.slice(7)
     } 
     const { id: userId, profileId } = this.request.user;
     let profile = await this.profileRepository.findOneBy({ userId });
@@ -60,5 +60,13 @@ export class UserService {
         { profileId: profile.id }
       );
     }
+  }
+
+  profile() {
+    const {id} = this.request.user;
+    return this.userRepository.findOne({
+      where: { id },
+      relations: ["profile"]
+    })
   }
 }
