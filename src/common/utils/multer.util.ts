@@ -42,6 +42,6 @@ function isValidImageFormat(ext: string) {
 export function multerStorage(folderName: string) {
   return diskStorage({
     destination: multerDestination(folderName),
-    filename: () => {},
+    filename: multerFilename,
   })
 }
