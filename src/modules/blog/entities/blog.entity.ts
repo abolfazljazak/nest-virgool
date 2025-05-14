@@ -1,6 +1,5 @@
 import { EntityNames } from "src/common/enum/entity.enum";
 import {
-  BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
@@ -13,6 +12,7 @@ import { UserEntity } from "src/modules/user/entities/user.entity";
 import { BlogLikesEntity } from "./like.entity";
 import { BlogBookmarkEntity } from "./bookmark.entity";
 import { BlogCommentEntity } from "./comment.entity";
+import { BaseEntity } from "src/common/abstracts/base.entity";
 
 @Entity(EntityNames.Blog)
 export class BlogEntity extends BaseEntity {
@@ -32,7 +32,7 @@ export class BlogEntity extends BaseEntity {
   slug: string;
 
   @Column()
-  time_for_study: string
+  time_for_study: string;
 
   @Column({ nullable: true })
   image: string;
