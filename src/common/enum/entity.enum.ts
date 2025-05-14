@@ -6,4 +6,5 @@ export enum EntityNames {
     Blog = "Blog",
     BlogCategory = "Blog_Category",
     BlogLikes = "Blog_Likes",
+    BlogBookmark = "Blog_Bookmark",
 }
