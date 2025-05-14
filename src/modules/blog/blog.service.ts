@@ -1,4 +1,10 @@
-import { BadRequestException, Inject, Injectable, Scope } from "@nestjs/common";
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+  Scope,
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { BlogEntity } from "./entities/blog.entity";
 import { FindOptionsWhere, Repository } from "typeorm";
@@ -7,7 +13,11 @@ import { REQUEST } from "@nestjs/core";
 import { Request } from "express";
 import { createSlug } from "src/common/utils/slugify.util";
 import { BlogStatus } from "./enum/status.enum";
-import { BadRequestMessage, PublicMessage } from "src/common/enum/message.enum";
+import {
+  BadRequestMessage,
+  NotFoundMessage,
+  PublicMessage,
+} from "src/common/enum/message.enum";
 import { randomId } from "src/common/utils/functions.util";
 import { PaginationDto } from "src/common/dtos/pagination.dto";
 import {
@@ -102,13 +112,14 @@ export class BlogService {
     let where = "";
     if (category) {
       category = category.toLowerCase();
-      if (where.length > 0) where += " AND "
+      if (where.length > 0) where += " AND ";
       where += "category.title = LOWER(:category)";
     }
     if (search) {
-        if (where.length > 0) where += " AND "
-        search = `%${search}%`
-        where += "CONCAT(blog.title, blog.description, blog.content) ILIKE :search"
+      if (where.length > 0) where += " AND ";
+      search = `%${search}%`;
+      where +=
+        "CONCAT(blog.title, blog.description, blog.content) ILIKE :search";
     }
     const [blogs, count] = await this.blogRepository
       .createQueryBuilder(EntityNames.Blog)
@@ -145,6 +156,20 @@ export class BlogService {
     return {
       pagination: paginationGenerator(count, page, limit),
       blogs,
+    };
+  }
+
+  async checkExistBlogById(id: number) {
+    const blog = await this.blogRepository.findOneBy({ id });
+    if (!blog) throw new NotFoundException(NotFoundMessage.NotFoundPost);
+    return blog;
+  }
+
+  async delete(id: number) {
+    await this.checkExistBlogById(id);
+    await this.blogRepository.delete({ id });
+    return {
+      message: PublicMessage.Deleted,
     };
   }
 }
