@@ -8,6 +8,7 @@ import { Request } from "express";
 import { createSlug } from "src/common/utils/slugify.util";
 import { BlogStatus } from "./enum/status.enum";
 import { PublicMessage } from "src/common/enum/message.enum";
+import { randomId } from "src/common/utils/functions.util";
 
 @Injectable({ scope: Scope.REQUEST })
 export class BlogService {
@@ -22,6 +23,10 @@ export class BlogService {
     let { title, content, description, slug, time_for_study, image } = blogDto;
     slug = slug ?? title;
     slug = createSlug(slug);
+    const isExist = this.checkBlogBySlug(slug);
+    if (isExist) {
+        slug += `-${randomId()}`
+    }
     const blog = this.blogRepository.create({
       title,
       slug,
@@ -31,9 +36,13 @@ export class BlogService {
       time_for_study,
       image,
     });
-    await this.blogRepository.save(blog)
+    await this.blogRepository.save(blog);
     return {
-        message: PublicMessage.Created
-    }
+      message: PublicMessage.Created,
+    };
+  }
+
+  checkBlogBySlug(slug: string) {
+    return !!this.blogRepository.findOneBy({ slug });
   }
 }
