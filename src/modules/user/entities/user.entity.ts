@@ -5,11 +5,13 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  OneToMany,
   OneToOne,
   UpdateDateColumn,
 } from "typeorm";
 import { OtpEntity } from "./otp.entity";
 import { ProfileEntity } from "./profile.entity";
+import { BlogEntity } from "src/modules/blog/entities/blog.entity";
 
 @Entity(EntityNames.User)
 export class UserEntity extends BaseEntity {
@@ -37,22 +39,25 @@ export class UserEntity extends BaseEntity {
   @Column()
   password: string;
 
-  @CreateDateColumn()
-  created_at: Date;
-
-  @UpdateDateColumn()
-  updated_at: Date;
-
   @Column()
   otpId: number;
-
+  
   @OneToOne(() => OtpEntity, (otp) => otp.user, { nullable: true })
   @JoinColumn()
   otp: OtpEntity;
-
+  
   @OneToOne(() => ProfileEntity, (profile) => profile.user, { nullable: true })
   profile: ProfileEntity;
-
+  
   @Column({ nullable: true })
   profileId: number;
+
+  @OneToMany(() => BlogEntity, blog => blog.author)
+  blogs: BlogEntity[]
+
+  @CreateDateColumn()
+  created_at: Date;
+  
+  @UpdateDateColumn()
+  updated_at: Date;
 }
