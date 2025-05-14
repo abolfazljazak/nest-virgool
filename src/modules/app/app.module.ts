@@ -6,6 +6,7 @@ import { TypeOrmConfig } from 'src/config/typeorm.config';
 import { UserModule } from '../user/user.module';
 import { AuthModule } from '../auth/auth.module';
 import { CategoryModule } from '../category/category.module';
+import { BlogModule } from '../blog/blog.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -16,6 +17,7 @@ import { CategoryModule } from '../category/category.module';
     AuthModule,
     UserModule,
     CategoryModule,
+    BlogModule,
   ],
   controllers: [],
   providers: []
