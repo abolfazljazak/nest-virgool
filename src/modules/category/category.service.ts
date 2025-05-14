@@ -39,6 +39,11 @@ export class CategoryService {
     };
   }
 
+  async insertByTitle(title: string) {
+    const category = this.categoryRepository.create({ title });
+    return this.categoryRepository.save(category)
+  }
+
   async checkExistAndResolveTitle(title: string) {
     title = title?.trim()?.toLocaleLowerCase();
     const cateory = await this.categoryRepository.findOneBy({ title });
@@ -66,15 +71,19 @@ export class CategoryService {
     return category;
   }
 
+  async findOneByTitle(title: string) {
+    return this.categoryRepository.findOneBy({ title });
+  }
+
   async update(id: number, updateCategoryDto: UpdateCategoryDto) {
     const category = await this.findOne(id);
     const { title, priority } = updateCategoryDto;
-    if (title) category.title = title
-    if (priority) category.priority = priority
-    await this.categoryRepository.save(category)
+    if (title) category.title = title;
+    if (priority) category.priority = priority;
+    await this.categoryRepository.save(category);
     return {
-      message: PublicMessage.Updated
-    }
+      message: PublicMessage.Updated,
+    };
   }
 
   async remove(id: number) {
