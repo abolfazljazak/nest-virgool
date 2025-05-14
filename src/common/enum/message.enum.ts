@@ -2,6 +2,7 @@ export enum BadRequestMessage {
   InValidLoginData = "اصلاعات ارسال شده برای ورود صحیح نمیباشد",
   InValidRegisterData = "اصلاعات ارسال شده برای ثبت نام صحیح نمیباشد",
   SometingWrong = "خطایی پیش آمده. دوباره تلاش کنید.",
+  InvalidCategory = "دسته بندی را به درستی وارد کنید.",
 }
 
 export enum AuthMessage {
