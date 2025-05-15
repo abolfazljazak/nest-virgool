@@ -29,6 +29,7 @@ import { CategoryService } from "../category/category.service";
 import { BlogCategoryEntity } from "./entities/blog-category.entity";
 import { EntityNames } from "src/common/enum/entity.enum";
 import { BlogLikesEntity } from "./entities/like.entity";
+import { BlogBookmarkEntity } from "./entities/bookmark.entity";
 
 @Injectable({ scope: Scope.REQUEST })
 export class BlogService {
@@ -39,6 +40,8 @@ export class BlogService {
     private blogCategoryRepository: Repository<BlogCategoryEntity>,
     @InjectRepository(BlogLikesEntity)
     private blogLikesRepository: Repository<BlogLikesEntity>,
+    @InjectRepository(BlogBookmarkEntity)
+    private blogBookmarkRepository: Repository<BlogBookmarkEntity>,
     private categoryService: CategoryService,
     @Inject(REQUEST) private request: Request
   ) {}
@@ -254,6 +257,28 @@ export class BlogService {
         userId: userId,
       });
       message = PublicMessage.Like;
+    }
+
+    return { message };
+  }
+
+  async bookmarkToggle(blogId: number) {
+    const { id: userId } = this.request.user;
+    const blog = await this.findBlogById(blogId);
+    const isbookmarked = await this.blogBookmarkRepository.findOneBy({
+      blogId: blog.id,
+      userId: userId,
+    });
+    let message: string;
+    if (isbookmarked) {
+      await this.blogLikesRepository.delete({ id: isbookmarked.id });
+      message = PublicMessage.UnBookmark;
+    } else {
+      await this.blogBookmarkRepository.insert({
+        blogId: blog.id,
+        userId: userId,
+      });
+      message = PublicMessage.Bookmark;
     }
 
     return { message };

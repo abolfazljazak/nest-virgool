@@ -36,6 +36,8 @@ export enum PublicMessage {
   Inserted = "با موفقت درج شد.",
   Like = "لایک شد.",
   DissLike = "دیس لایک شد.",
+  Bookmark = "ذخیره شد.",
+  UnBookmark = "از لیست ذخیره شده ها خارج شد.",
 }
 
 export enum ConflictMessage {
