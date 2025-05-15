@@ -7,7 +7,7 @@ import {
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { BlogEntity } from "../entities/blog.entity";
-import { Repository } from "typeorm";
+import { QueryBuilder, Repository } from "typeorm";
 import { CreateBlogDto, FilterBlogDto, UpdateBlogDto } from "../dto/blog.dto";
 import { REQUEST } from "@nestjs/core";
 import { Request } from "express";
@@ -133,10 +133,22 @@ export class BlogService {
       .leftJoin("categories.category", "category")
       .leftJoin("blog.author", "author")
       .leftJoin("author.profile", "profile")
-      .addSelect(["categories.id", "category.title", "author.id", "author.username", "profile.nick_name"])
+      .addSelect([
+        "categories.id",
+        "category.title",
+        "author.id",
+        "author.username",
+        "profile.nick_name",
+      ])
       .where(where, { category, search })
       .loadRelationCountAndMap("blog.likes", "blog.likes")
       .loadRelationCountAndMap("blog.bookmarks", "blog.bookmarks")
+      .loadRelationCountAndMap(
+        "blog.comments",
+        "blog.comments",
+        "comments",
+        (qb) => qb.where("Comments.accepted = :accepted", { accepted: true })
+      )
       .orderBy("blog.id")
       .skip(skip)
       .take(limit)
