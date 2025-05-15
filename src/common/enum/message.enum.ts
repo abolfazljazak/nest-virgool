@@ -34,6 +34,8 @@ export enum PublicMessage {
   Deleted = "با موفقت حذف شد.",
   Updated = "با موفقت به روز رسانی شد.",
   Inserted = "با موفقت درج شد.",
+  Like = "لایک شد.",
+  DissLike = "دیس لایک شد.",
 }
 
 export enum ConflictMessage {

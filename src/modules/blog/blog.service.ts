@@ -28,6 +28,7 @@ import { isArray } from "class-validator";
 import { CategoryService } from "../category/category.service";
 import { BlogCategoryEntity } from "./entities/blog-category.entity";
 import { EntityNames } from "src/common/enum/entity.enum";
+import { BlogLikesEntity } from "./entities/like.entity";
 
 @Injectable({ scope: Scope.REQUEST })
 export class BlogService {
@@ -35,7 +36,9 @@ export class BlogService {
     @InjectRepository(BlogEntity)
     private blogRepository: Repository<BlogEntity>,
     @InjectRepository(BlogCategoryEntity)
-    private blogCategoryEntity: Repository<BlogCategoryEntity>,
+    private blogCategoryRepository: Repository<BlogCategoryEntity>,
+    @InjectRepository(BlogLikesEntity)
+    private blogLikesRepository: Repository<BlogLikesEntity>,
     private categoryService: CategoryService,
     @Inject(REQUEST) private request: Request
   ) {}
@@ -80,7 +83,7 @@ export class BlogService {
       if (!category) {
         category = await this.categoryService.insertByTitle(categoryTitle);
       }
-      await this.blogCategoryEntity.insert({
+      await this.blogCategoryRepository.insert({
         blogId: blog.id,
         categoryId: category.id,
       });
@@ -159,14 +162,14 @@ export class BlogService {
     };
   }
 
-  async checkExistBlogById(id: number) {
+  async findBlogById(id: number) {
     const blog = await this.blogRepository.findOneBy({ id });
     if (!blog) throw new NotFoundException(NotFoundMessage.NotFoundPost);
     return blog;
   }
 
   async delete(id: number) {
-    await this.checkExistBlogById(id);
+    await this.findBlogById(id);
     await this.blogRepository.delete({ id });
     return {
       message: PublicMessage.Deleted,
@@ -184,7 +187,7 @@ export class BlogService {
       categories,
     } = blogDto;
 
-    let blog = await this.checkExistBlogById(id);
+    let blog = await this.findBlogById(id);
 
     if (typeof categories === "string") {
       categories = categories.split(",");
@@ -213,7 +216,7 @@ export class BlogService {
 
     blog = await this.blogRepository.save(blog);
 
-    await this.blogCategoryEntity.delete({ blogId: blog.id });
+    await this.blogCategoryRepository.delete({ blogId: blog.id });
 
     for (const categoryTitle of categories) {
       let category = await this.categoryService.findOneByTitle(categoryTitle);
@@ -221,7 +224,7 @@ export class BlogService {
         category = await this.categoryService.insertByTitle(categoryTitle);
       }
 
-      await this.blogCategoryEntity.insert({
+      await this.blogCategoryRepository.insert({
         blogId: blog.id,
         categoryId: category.id,
       });
@@ -229,5 +232,27 @@ export class BlogService {
     return {
       message: PublicMessage.Updated,
     };
+  }
+
+  async likeToggle(blogId: number) {
+    const { id: userId } = this.request.user;
+    const blog = await this.findBlogById(blogId);
+    const isLiked = await this.blogLikesRepository.findOneBy({
+      blogId: blog.id,
+      userId: userId,
+    });
+    let message: string;
+    if (isLiked) {
+      await this.blogLikesRepository.delete({ id: isLiked.id });
+      message = PublicMessage.DissLike;
+    } else {
+      await this.blogLikesRepository.insert({
+        blogId: blog.id,
+        userId: userId,
+      });
+      message = PublicMessage.Like;
+    }
+
+    return { message };
   }
 }
