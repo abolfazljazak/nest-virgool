@@ -6,13 +6,13 @@ import {
   Scope,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { BlogEntity } from "./entities/blog.entity";
+import { BlogEntity } from "../entities/blog.entity";
 import { Repository } from "typeorm";
-import { CreateBlogDto, FilterBlogDto, UpdateBlogDto } from "./dto/blog.dto";
+import { CreateBlogDto, FilterBlogDto, UpdateBlogDto } from "../dto/blog.dto";
 import { REQUEST } from "@nestjs/core";
 import { Request } from "express";
 import { createSlug } from "src/common/utils/slugify.util";
-import { BlogStatus } from "./enum/status.enum";
+import { BlogStatus } from "../enum/status.enum";
 import {
   BadRequestMessage,
   NotFoundMessage,
@@ -25,11 +25,11 @@ import {
   paginationSolver,
 } from "src/common/utils/pagination.util";
 import { isArray } from "class-validator";
-import { CategoryService } from "../category/category.service";
-import { BlogCategoryEntity } from "./entities/blog-category.entity";
+import { CategoryService } from "../../category/category.service";
+import { BlogCategoryEntity } from "../entities/blog-category.entity";
 import { EntityNames } from "src/common/enum/entity.enum";
-import { BlogLikesEntity } from "./entities/like.entity";
-import { BlogBookmarkEntity } from "./entities/bookmark.entity";
+import { BlogLikesEntity } from "../entities/like.entity";
+import { BlogBookmarkEntity } from "../entities/bookmark.entity";
 
 @Injectable({ scope: Scope.REQUEST })
 export class BlogService {
@@ -134,8 +134,9 @@ export class BlogService {
       .leftJoin("blog.author", "author")
       .leftJoin("author.profile", "profile")
       .addSelect(["categories.id", "category.title", "author.id", "author.username", "profile.nick_name"])
-      .loadRelationCountAndMap("blog.likes", "blog.likes")
       .where(where, { category, search })
+      .loadRelationCountAndMap("blog.likes", "blog.likes")
+      .loadRelationCountAndMap("blog.bookmarks", "blog.bookmarks")
       .orderBy("blog.id")
       .skip(skip)
       .take(limit)
