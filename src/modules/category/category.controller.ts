@@ -3,9 +3,9 @@ import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
-import { SwaggerConsumes } from 'src/common/enum/swagger-consumes.enum';
-import { Pagination } from 'src/common/decorators/pagination.decorator';
-import { PaginationDto } from 'src/common/dtos/pagination.dto';
+import { SwaggerConsumes } from '@common/enum/swagger-consumes.enum';
+import { Pagination } from '@common/decorators/pagination.decorator';
+import { PaginationDto } from '@common/dtos/pagination.dto';
 
 @Controller('category')
 @ApiTags("Category")

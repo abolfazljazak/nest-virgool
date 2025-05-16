@@ -6,10 +6,10 @@ import {
 } from "@nestjs/common";
 import { isJWT } from "class-validator";
 import { Request } from "express";
-import { AuthMessage } from "src/common/enum/message.enum";
+import { AuthMessage } from "@common/enum/message.enum";
 import { AuthService } from "../auth.service";
 import { Reflector } from "@nestjs/core";
-import { SKIP_AUTH } from "src/common/decorators/skip-auth.decorator";
+import { SKIP_AUTH } from "@common/decorators/skip-auth.decorator";
 
 @Injectable()
 export class AuthGuard implements CanActivate {

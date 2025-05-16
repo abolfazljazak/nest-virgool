@@ -8,7 +8,7 @@ import {
   Length,
 } from "class-validator";
 import { Gender } from "../enums/gender.enum";
-import { ValidationMessage } from "src/common/enum/message.enum";
+import { ValidationMessage } from "@common/enum/message.enum";
 
 export class ProfileDto {
   @ApiPropertyOptional()

@@ -2,7 +2,7 @@ import { Body, Controller, Get, Post, Req, Res, UseGuards } from "@nestjs/common
 import { AuthService } from "./auth.service";
 import { ApiBearerAuth, ApiConsumes, ApiTags } from "@nestjs/swagger";
 import { AuthDto, CheckOtpDto } from "./dto/auth.dto";
-import { SwaggerConsumes } from "src/common/enum/swagger-consumes.enum";
+import { SwaggerConsumes } from "@common/enum/swagger-consumes.enum";
 import { Request, Response } from "express";
 import { AuthGuard } from "./guards/auth.guard";
 

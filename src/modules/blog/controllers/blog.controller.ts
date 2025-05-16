@@ -2,12 +2,12 @@ import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query, U
 import { BlogService } from '../services/blog.service';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../../auth/guards/auth.guard';
-import { SwaggerConsumes } from 'src/common/enum/swagger-consumes.enum';
+import { SwaggerConsumes } from '@common/enum/swagger-consumes.enum';
 import { CreateBlogDto, FilterBlogDto, UpdateBlogDto } from '../dto/blog.dto';
-import { Pagination } from 'src/common/decorators/pagination.decorator';
-import { PaginationDto } from 'src/common/dtos/pagination.dto';
-import { SkipAuth } from 'src/common/decorators/skip-auth.decorator';
-import { FilterBlog } from 'src/common/decorators/filter.decorator';
+import { Pagination } from '@common/decorators/pagination.decorator';
+import { PaginationDto } from '@common/dtos/pagination.dto';
+import { SkipAuth } from '@common/decorators/skip-auth.decorator';
+import { FilterBlog } from '@common/decorators/filter.decorator';
 
 @Controller('blog')
 @ApiTags("Blog")

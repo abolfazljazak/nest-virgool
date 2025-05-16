@@ -1,5 +1,5 @@
-import { BaseEntity } from "src/common/abstracts/base.entity";
-import { EntityNames } from "src/common/enum/entity.enum";
+import { BaseEntity } from "@common/abstracts/base.entity";
+import { EntityNames } from "@common/enum/entity.enum";
 import { Column, Entity, OneToOne } from "typeorm";
 import { UserEntity } from "./user.entity";
 

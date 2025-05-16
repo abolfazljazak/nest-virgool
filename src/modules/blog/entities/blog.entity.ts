@@ -1,4 +1,4 @@
-import { EntityNames } from "src/common/enum/entity.enum";
+import { EntityNames } from "@common/enum/entity.enum";
 import {
   Column,
   CreateDateColumn,
@@ -12,7 +12,7 @@ import { UserEntity } from "src/modules/user/entities/user.entity";
 import { BlogLikesEntity } from "./like.entity";
 import { BlogBookmarkEntity } from "./bookmark.entity";
 import { BlogCommentEntity } from "./comment.entity";
-import { BaseEntity } from "src/common/abstracts/base.entity";
+import { BaseEntity } from "@common/abstracts/base.entity";
 import { BlogCategoryEntity } from "./blog-category.entity";
 
 @Entity(EntityNames.Blog)

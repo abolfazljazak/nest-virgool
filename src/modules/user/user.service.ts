@@ -22,11 +22,11 @@ import {
   ConflictMessage,
   NotFoundMessage,
   PublicMessage,
-} from "src/common/enum/message.enum";
+} from "@common/enum/message.enum";
 import { AuthService } from "../auth/auth.service";
 import { TokenService } from "../auth/tokens.service";
 import { OtpEntity } from "./entities/otp.entity";
-import { CookieKeys } from "src/common/enum/cookie.enum";
+import { CookieKeys } from "@common/enum/cookie.enum";
 import { AuthMethod } from "../auth/enums/method.enum";
 
 @Injectable({ scope: Scope.REQUEST })

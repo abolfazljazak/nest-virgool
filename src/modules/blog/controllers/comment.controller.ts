@@ -13,9 +13,9 @@ import { ApiBearerAuth, ApiConsumes, ApiTags } from "@nestjs/swagger";
 import { AuthGuard } from "src/modules/auth/guards/auth.guard";
 import { BlogCommentService } from "../services/comment.service";
 import { CreateCommentDto } from "../dto/comment.dto";
-import { SwaggerConsumes } from "src/common/enum/swagger-consumes.enum";
-import { Pagination } from "src/common/decorators/pagination.decorator";
-import { PaginationDto } from "src/common/dtos/pagination.dto";
+import { SwaggerConsumes } from "@common/enum/swagger-consumes.enum";
+import { Pagination } from "@common/decorators/pagination.decorator";
+import { PaginationDto } from "@common/dtos/pagination.dto";
 
 @Controller("blog-comment")
 @ApiTags("Blog-Comment")

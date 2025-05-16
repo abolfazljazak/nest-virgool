@@ -13,12 +13,12 @@ import {
   ConflictMessage,
   NotFoundMessage,
   PublicMessage,
-} from "src/common/enum/message.enum";
-import { PaginationDto } from "src/common/dtos/pagination.dto";
+} from "@common/enum/message.enum";
+import { PaginationDto } from "@common/dtos/pagination.dto";
 import {
   paginationGenerator,
   paginationSolver,
-} from "src/common/utils/pagination.util";
+} from "@common/utils/pagination.util";
 
 @Injectable()
 export class CategoryService {

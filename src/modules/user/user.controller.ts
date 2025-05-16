@@ -13,15 +13,15 @@ import {
 import { UserService } from "./user.service";
 import { ApiBearerAuth, ApiConsumes, ApiTags } from "@nestjs/swagger";
 import { ChangeUsernameDto, ChangeEmailDto, ChangePhoneDto, ProfileDto } from "./dto/profile.dto";
-import { SwaggerConsumes } from "src/common/enum/swagger-consumes.enum";
+import { SwaggerConsumes } from "@common/enum/swagger-consumes.enum";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
-import { multerStorage } from "src/common/utils/multer.util";
+import { multerStorage } from "@common/utils/multer.util";
 import { AuthGuard } from "../auth/guards/auth.guard";
 import { ProfileImages } from "./types/files";
 import { Response } from "express";
-import { CookieKeys } from "src/common/enum/cookie.enum";
-import { CookiesOptionsToken } from "src/common/utils/cookie.util";
-import { PublicMessage } from "src/common/enum/message.enum";
+import { CookieKeys } from "@common/enum/cookie.enum";
+import { CookiesOptionsToken } from "@common/utils/cookie.util";
+import { PublicMessage } from "@common/enum/message.enum";
 import { CheckOtpDto } from "../auth/dto/auth.dto";
 
 @Controller("user")

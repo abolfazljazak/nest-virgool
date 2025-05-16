@@ -1,4 +1,4 @@
-import { EntityNames } from "src/common/enum/entity.enum";
+import { EntityNames } from "@common/enum/entity.enum";
 import { UserEntity } from "src/modules/user/entities/user.entity";
 import {
   Column,
@@ -9,7 +9,7 @@ import {
   OneToMany,
 } from "typeorm";
 import { BlogEntity } from "./blog.entity";
-import { BaseEntity } from "src/common/abstracts/base.entity";
+import { BaseEntity } from "@common/abstracts/base.entity";
 
 @Entity(EntityNames.BlogComment)
 export class BlogCommentEntity extends BaseEntity {

@@ -18,15 +18,15 @@ import {
   AuthMessage,
   BadRequestMessage,
   PublicMessage,
-} from "src/common/enum/message.enum";
+} from "@common/enum/message.enum";
 import { OtpEntity } from "../user/entities/otp.entity";
 import { randomInt } from "crypto";
 import { TokenService } from "./tokens.service";
 import { Request, Response } from "express";
-import { CookieKeys } from "src/common/enum/cookie.enum";
+import { CookieKeys } from "@common/enum/cookie.enum";
 import { AuthResponse } from "./types/response";
 import { REQUEST } from "@nestjs/core";
-import { CookiesOptionsToken } from "src/common/utils/cookie.util";
+import { CookiesOptionsToken } from "@common/utils/cookie.util";
 
 @Injectable({ scope: Scope.REQUEST })
 export class AuthService {

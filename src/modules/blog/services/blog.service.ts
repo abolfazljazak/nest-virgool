@@ -11,23 +11,23 @@ import { QueryBuilder, Repository } from "typeorm";
 import { CreateBlogDto, FilterBlogDto, UpdateBlogDto } from "../dto/blog.dto";
 import { REQUEST } from "@nestjs/core";
 import { Request } from "express";
-import { createSlug } from "src/common/utils/slugify.util";
+import { createSlug } from "@common/utils/slugify.util";
 import { BlogStatus } from "../enum/status.enum";
 import {
   BadRequestMessage,
   NotFoundMessage,
   PublicMessage,
-} from "src/common/enum/message.enum";
-import { randomId } from "src/common/utils/functions.util";
-import { PaginationDto } from "src/common/dtos/pagination.dto";
+} from "@common/enum/message.enum";
+import { randomId } from "@common/utils/functions.util";
+import { PaginationDto } from "@common/dtos/pagination.dto";
 import {
   paginationGenerator,
   paginationSolver,
-} from "src/common/utils/pagination.util";
+} from "@common/utils/pagination.util";
 import { isArray } from "class-validator";
 import { CategoryService } from "../../category/category.service";
 import { BlogCategoryEntity } from "../entities/blog-category.entity";
-import { EntityNames } from "src/common/enum/entity.enum";
+import { EntityNames } from "@common/enum/entity.enum";
 import { BlogLikesEntity } from "../entities/like.entity";
 import { BlogBookmarkEntity } from "../entities/bookmark.entity";
 import { BlogCommentService } from "./comment.service";

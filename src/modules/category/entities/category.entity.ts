@@ -1,5 +1,5 @@
-import { BaseEntity } from "src/common/abstracts/base.entity";
-import { EntityNames } from "src/common/enum/entity.enum";
+import { BaseEntity } from "@common/abstracts/base.entity";
+import { EntityNames } from "@common/enum/entity.enum";
 import { BlogCategoryEntity } from "src/modules/blog/entities/blog-category.entity";
 import { BlogCommentEntity } from "src/modules/blog/entities/comment.entity";
 import { Column, Entity, OneToMany } from "typeorm";
