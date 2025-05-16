@@ -296,4 +296,39 @@ export class BlogService {
 
     return { message };
   }
+
+  async findOneBySlug(slug: string) {
+    const userId = this.request?.user?.id
+    const blog = await this.blogRepository
+      .createQueryBuilder(EntityNames.Blog)
+      .leftJoin("blog.categories", "categories")
+      .leftJoin("categories.category", "category")
+      .leftJoin("blog.author", "author")
+      .leftJoin("author.profile", "profile")
+      .addSelect([
+        "categories.id",
+        "category.title",
+        "author.id",
+        "author.username",
+        "profile.nick_name",
+      ])
+      .where({ slug })
+      .loadRelationCountAndMap("blog.likes", "blog.likes")
+      .loadRelationCountAndMap("blog.bookmarks", "blog.bookmarks")
+      .leftJoinAndSelect(
+        "blog.comments",
+        "comments",
+        "Comments.accepted = :accepted",
+        { accepted: true }
+      )
+      .getOne();
+    if (blog) throw new NotFoundException(NotFoundMessage.NotFound);
+    const isLiked = !!(await this.blogLikesRepository.findOneBy({ userId, blogId: blog.id }))
+    const isBookmarked = !!(await this.blogBookmarkRepository.findOneBy({ userId, blogId: blog.id }))
+    return {
+      blog,
+      isLiked,
+      isBookmarked,
+    }
+  }
 }

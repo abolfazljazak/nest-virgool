@@ -34,6 +34,10 @@ export class BlogController {
   find(@Query() paginationDto: PaginationDto, @Query() filterDto: FilterBlogDto) {
     return this.blogService.blogList(paginationDto, filterDto)
   }
+  @Get("by-slug/:slug")
+  findOneBySlug(@Param("slug") slug: string) {
+    return this.blogService.findOneBySlug(slug)
+  }
 
   @Get("like/:id")
   likeToggle(@Param("id", ParseIntPipe) id: number) {
