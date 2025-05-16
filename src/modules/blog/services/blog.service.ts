@@ -30,6 +30,7 @@ import { BlogCategoryEntity } from "../entities/blog-category.entity";
 import { EntityNames } from "src/common/enum/entity.enum";
 import { BlogLikesEntity } from "../entities/like.entity";
 import { BlogBookmarkEntity } from "../entities/bookmark.entity";
+import { BlogCommentService } from "./comment.service";
 
 @Injectable({ scope: Scope.REQUEST })
 export class BlogService {
@@ -43,6 +44,7 @@ export class BlogService {
     @InjectRepository(BlogBookmarkEntity)
     private blogBookmarkRepository: Repository<BlogBookmarkEntity>,
     private categoryService: CategoryService,
+    private blogCommentService: BlogCommentService,
     @Inject(REQUEST) private request: Request
   ) {}
 
@@ -297,7 +299,7 @@ export class BlogService {
     return { message };
   }
 
-  async findOneBySlug(slug: string) {
+  async findOneBySlug(slug: string, paginationDto: PaginationDto) {
     const userId = this.request?.user?.id
     const blog = await this.blogRepository
       .createQueryBuilder(EntityNames.Blog)
@@ -315,20 +317,16 @@ export class BlogService {
       .where({ slug })
       .loadRelationCountAndMap("blog.likes", "blog.likes")
       .loadRelationCountAndMap("blog.bookmarks", "blog.bookmarks")
-      .leftJoinAndSelect(
-        "blog.comments",
-        "comments",
-        "Comments.accepted = :accepted",
-        { accepted: true }
-      )
       .getOne();
     if (blog) throw new NotFoundException(NotFoundMessage.NotFound);
+    const comments = await this.blogCommentService.findCommentsOfBlog(blog.id, paginationDto)
     const isLiked = !!(await this.blogLikesRepository.findOneBy({ userId, blogId: blog.id }))
     const isBookmarked = !!(await this.blogBookmarkRepository.findOneBy({ userId, blogId: blog.id }))
     return {
       blog,
       isLiked,
       isBookmarked,
+      comments
     }
   }
 }
