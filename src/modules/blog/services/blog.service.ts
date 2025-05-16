@@ -300,7 +300,7 @@ export class BlogService {
   }
 
   async findOneBySlug(slug: string, paginationDto: PaginationDto) {
-    const userId = this.request?.user?.id
+    const userId = this.request?.user?.id;
     const blog = await this.blogRepository
       .createQueryBuilder(EntityNames.Blog)
       .leftJoin("blog.categories", "categories")
@@ -319,14 +319,27 @@ export class BlogService {
       .loadRelationCountAndMap("blog.bookmarks", "blog.bookmarks")
       .getOne();
     if (blog) throw new NotFoundException(NotFoundMessage.NotFound);
-    const comments = await this.blogCommentService.findCommentsOfBlog(blog.id, paginationDto)
-    const isLiked = !!(await this.blogLikesRepository.findOneBy({ userId, blogId: blog.id }))
-    const isBookmarked = !!(await this.blogBookmarkRepository.findOneBy({ userId, blogId: blog.id }))
+    const comments = await this.blogCommentService.findCommentsOfBlog(
+      blog.id,
+      paginationDto
+    );
+    let isLiked = false;
+    let isBookmarked = false;
+    if (userId && isNaN(userId) && userId > 0) {
+      isLiked = !!(await this.blogLikesRepository.findOneBy({
+        userId,
+        blogId: blog.id,
+      }));
+      isBookmarked = !!(await this.blogBookmarkRepository.findOneBy({
+        userId,
+        blogId: blog.id,
+      }));
+    }
     return {
       blog,
       isLiked,
       isBookmarked,
-      comments
-    }
+      comments,
+    };
   }
 }
