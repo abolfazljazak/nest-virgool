@@ -1,7 +1,7 @@
 import { BaseEntity } from "@common/abstracts/base.entity";
 import { EntityNames } from "@common/enum/entity.enum";
 import { UserEntity } from "src/modules/user/entities/user.entity";
-import { Column, CreateDateColumn, Entity, ManyToOne } from "typeorm";
+import { AfterLoad, Column, CreateDateColumn, Entity, ManyToOne } from "typeorm";
 
 @Entity(EntityNames.Image)
 export class ImageEntity extends BaseEntity {
@@ -21,4 +21,9 @@ export class ImageEntity extends BaseEntity {
 
     @CreateDateColumn()
     created_at: Date
+
+    @AfterLoad()
+    map() {
+        this.location = `http://localhoset:3000/${this.location}`
+    }
 }
