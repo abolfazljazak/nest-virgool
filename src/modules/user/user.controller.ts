@@ -23,11 +23,11 @@ import { CookieKeys } from "@common/enum/cookie.enum";
 import { CookiesOptionsToken } from "@common/utils/cookie.util";
 import { PublicMessage } from "@common/enum/message.enum";
 import { CheckOtpDto } from "../auth/dto/auth.dto";
+import { AuthDecorator } from "@common/decorators/auth.decorator";
 
 @Controller("user")
 @ApiTags("User")
-@ApiBearerAuth("Authorization")
-@UseGuards(AuthGuard)
+@AuthDecorator()
 export class UserController {
   constructor(private readonly userService: UserService) {}
 

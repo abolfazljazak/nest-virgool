@@ -16,11 +16,11 @@ import { CreateCommentDto } from "../dto/comment.dto";
 import { SwaggerConsumes } from "@common/enum/swagger-consumes.enum";
 import { Pagination } from "@common/decorators/pagination.decorator";
 import { PaginationDto } from "@common/dtos/pagination.dto";
+import { AuthDecorator } from "@common/decorators/auth.decorator";
 
 @Controller("blog-comment")
 @ApiTags("Blog-Comment")
-@ApiBearerAuth("Authorization")
-@UseGuards(AuthGuard)
+@AuthDecorator()
 export class BlogCommentController {
   constructor(private readonly blogCommentService: BlogCommentService) {}
 
