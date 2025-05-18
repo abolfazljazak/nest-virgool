@@ -17,6 +17,7 @@ import { BlogBookmarkEntity } from "src/modules/blog/entities/bookmark.entity";
 import { BlogCommentEntity } from "src/modules/blog/entities/comment.entity";
 import { ImageEntity } from "src/modules/image/entities/image.entity";
 import { Roles } from "@common/enum/role.enum";
+import { FollowEntity } from "./follow.entity";
 
 @Entity(EntityNames.User)
 export class UserEntity extends BaseEntity {
@@ -71,6 +72,12 @@ export class UserEntity extends BaseEntity {
 
   @OneToMany(() => BlogCommentEntity, (comment) => comment.user)
   blog_comments: BlogCommentEntity[];
+
+  @OneToMany(() => FollowEntity, (follow) => follow.following)
+  following: FollowEntity[];
+
+  @OneToMany(() => FollowEntity, (follow) => follow.follower)
+  followers: FollowEntity[];
 
   @OneToMany(() => ImageEntity, (image) => image.user)
   images: ImageEntity[];
