@@ -1,4 +1,4 @@
 export type AuthResponse = {
-    code: string,
-    token: string
-}
+  code: string;
+  token: string;
+};
