@@ -18,6 +18,7 @@ import { BlogCommentEntity } from "src/modules/blog/entities/comment.entity";
 import { ImageEntity } from "src/modules/image/entities/image.entity";
 import { Roles } from "@common/enum/role.enum";
 import { FollowEntity } from "./follow.entity";
+import { UserStatus } from "../enums/status.enum";
 
 @Entity(EntityNames.User)
 export class UserEntity extends BaseEntity {
@@ -47,6 +48,9 @@ export class UserEntity extends BaseEntity {
 
   @Column({ default: Roles.User })
   role: string;
+
+  @Column({ default: UserStatus.Active })
+  status: string;
 
   @Column()
   otpId: number;
