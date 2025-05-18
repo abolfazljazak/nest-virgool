@@ -30,6 +30,7 @@ import { OtpEntity } from "./entities/otp.entity";
 import { CookieKeys } from "@common/enum/cookie.enum";
 import { AuthMethod } from "../auth/enums/method.enum";
 import { FollowEntity } from "./entities/follow.entity";
+import { EntityNames } from "@common/enum/entity.enum";
 
 @Injectable({ scope: Scope.REQUEST })
 export class UserService {
@@ -105,10 +106,13 @@ export class UserService {
 
   profile() {
     const { id } = this.request.user;
-    return this.userRepository.findOne({
-      where: { id },
-      relations: ["profile"],
-    });
+    return this.userRepository
+      .createQueryBuilder(EntityNames.User)
+      .where({ id })
+      .leftJoinAndSelect("user.profile", "profile")
+      .loadRelationCountAndMap("user.followers", "user.followers")
+      .loadRelationCountAndMap("user.following", "user.following")
+      .getOne();
   }
 
   find() {
@@ -244,17 +248,17 @@ export class UserService {
     });
     let message = null;
     if (isFollowing) {
-      message = PublicMessage.UnFollow
+      message = PublicMessage.UnFollow;
       await this.followRepository.remove(isFollowing);
     } else {
-      message = PublicMessage.Follow
+      message = PublicMessage.Follow;
       await this.followRepository.insert({
         followingId,
         followerId: userId,
       });
     }
     return {
-      message
-    }
+      message,
+    };
   }
 }
