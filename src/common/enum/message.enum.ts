@@ -41,6 +41,8 @@ export enum PublicMessage {
   Bookmark = "ذخیره شد.",
   UnBookmark = "از لیست ذخیره شده ها خارج شد.",
   CreateComment = "نظر شما ثبت شد.",
+  Follow = "فالو شد.",
+  UnFollow = "آنفالو شد",
 }
 
 export enum ConflictMessage {

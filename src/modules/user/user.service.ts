@@ -3,6 +3,7 @@ import {
   ConflictException,
   Inject,
   Injectable,
+  NotFoundException,
   Scope,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -28,6 +29,7 @@ import { TokenService } from "../auth/tokens.service";
 import { OtpEntity } from "./entities/otp.entity";
 import { CookieKeys } from "@common/enum/cookie.enum";
 import { AuthMethod } from "../auth/enums/method.enum";
+import { FollowEntity } from "./entities/follow.entity";
 
 @Injectable({ scope: Scope.REQUEST })
 export class UserService {
@@ -38,6 +40,8 @@ export class UserService {
     private profileRepository: Repository<ProfileEntity>,
     @InjectRepository(OtpEntity)
     private otpRepository: Repository<OtpEntity>,
+    @InjectRepository(FollowEntity)
+    private followRepository: Repository<FollowEntity>,
     @Inject(REQUEST) private request: Request,
     private authService: AuthService,
     private tokenService: TokenService
@@ -105,6 +109,10 @@ export class UserService {
       where: { id },
       relations: ["profile"],
     });
+  }
+
+  find() {
+    return this.userRepository.find();
   }
 
   async changeEmail(email: string) {
@@ -224,5 +232,29 @@ export class UserService {
       throw new BadRequestException(AuthMessage.ExpiredCode);
     if (otp.code !== code) throw new BadRequestException(AuthMessage.TryAgain);
     return otp;
+  }
+
+  async followToggle(followingId: number) {
+    const { id: userId } = this.request.user;
+    const following = await this.userRepository.findOneBy({ id: followingId });
+    if (!following) throw new NotFoundException(NotFoundMessage.NotFoundUser);
+    const isFollowing = await this.followRepository.findOneBy({
+      followerId: userId,
+      followingId,
+    });
+    let message = null;
+    if (isFollowing) {
+      message = PublicMessage.UnFollow
+      await this.followRepository.remove(isFollowing);
+    } else {
+      message = PublicMessage.Follow
+      await this.followRepository.insert({
+        followingId,
+        followerId: userId,
+      });
+    }
+    return {
+      message
+    }
   }
 }

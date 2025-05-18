@@ -2,21 +2,25 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Patch,
   Post,
   Put,
   Res,
   UploadedFiles,
-  UseGuards,
   UseInterceptors,
 } from "@nestjs/common";
 import { UserService } from "./user.service";
-import { ApiBearerAuth, ApiConsumes, ApiTags } from "@nestjs/swagger";
-import { ChangeUsernameDto, ChangeEmailDto, ChangePhoneDto, ProfileDto } from "./dto/profile.dto";
+import { ApiConsumes, ApiParam, ApiTags } from "@nestjs/swagger";
+import {
+  ChangeUsernameDto,
+  ChangeEmailDto,
+  ChangePhoneDto,
+  ProfileDto,
+} from "./dto/profile.dto";
 import { SwaggerConsumes } from "@common/enum/swagger-consumes.enum";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import { multerStorage } from "@common/utils/multer.util";
-import { AuthGuard } from "../auth/guards/auth.guard";
 import { ProfileImages } from "./types/files";
 import { Response } from "express";
 import { CookieKeys } from "@common/enum/cookie.enum";
@@ -56,50 +60,60 @@ export class UserController {
     return this.userService.profile();
   }
 
+  @Get("list")
+  find() {
+    return this.userService.find();
+  }
+
   @Patch("change-email")
-    @ApiConsumes(SwaggerConsumes.UrlEncoded, SwaggerConsumes.Json)
+  @ApiConsumes(SwaggerConsumes.UrlEncoded, SwaggerConsumes.Json)
   async changeEmail(@Body() emailDto: ChangeEmailDto, @Res() res: Response) {
     const { code, token, message } = await this.userService.changeEmail(
       emailDto.email
     );
     if (message) return res.json({ message });
-    res.cookie(CookieKeys.EmailOTP, token, CookiesOptionsToken())
+    res.cookie(CookieKeys.EmailOTP, token, CookiesOptionsToken());
     res.json({
       code,
-      message: PublicMessage.SendOtp
-    })
+      message: PublicMessage.SendOtp,
+    });
   }
 
   @Post("verify-email-otp")
-    @ApiConsumes(SwaggerConsumes.UrlEncoded, SwaggerConsumes.Json)
+  @ApiConsumes(SwaggerConsumes.UrlEncoded, SwaggerConsumes.Json)
   async verifyEmail(@Body() otpDto: CheckOtpDto) {
-    return this.userService.verifyEmail(otpDto.code)
+    return this.userService.verifyEmail(otpDto.code);
   }
 
-  
   @Patch("change-phone")
-    @ApiConsumes(SwaggerConsumes.UrlEncoded, SwaggerConsumes.Json)
+  @ApiConsumes(SwaggerConsumes.UrlEncoded, SwaggerConsumes.Json)
   async changePhone(@Body() phoneDto: ChangePhoneDto, @Res() res: Response) {
     const { code, token, message } = await this.userService.changePhone(
       phoneDto.phone
     );
     if (message) return res.json({ message });
-    res.cookie(CookieKeys.PhoneOTP, token, CookiesOptionsToken())
+    res.cookie(CookieKeys.PhoneOTP, token, CookiesOptionsToken());
     res.json({
       code,
-      message: PublicMessage.SendOtp
-    })
+      message: PublicMessage.SendOtp,
+    });
   }
 
   @Post("verify-phone-otp")
-    @ApiConsumes(SwaggerConsumes.UrlEncoded, SwaggerConsumes.Json)
+  @ApiConsumes(SwaggerConsumes.UrlEncoded, SwaggerConsumes.Json)
   async verifyPhone(@Body() otpDto: CheckOtpDto) {
-    return this.userService.verifyPhone(otpDto.code)
+    return this.userService.verifyPhone(otpDto.code);
   }
 
   @Patch("change-username")
-    @ApiConsumes(SwaggerConsumes.UrlEncoded, SwaggerConsumes.Json)
+  @ApiConsumes(SwaggerConsumes.UrlEncoded, SwaggerConsumes.Json)
   async changeUsername(usernameDto: ChangeUsernameDto) {
-    return this.userService.changeUsername(usernameDto.username)
+    return this.userService.changeUsername(usernameDto.username);
+  }
+
+  @Get("follow/:followingId")
+  @ApiParam({ name: "followingId" })
+  follow(@Param("followingId") followingId: number) {
+    return this.userService.followToggle(followingId);
   }
 }
