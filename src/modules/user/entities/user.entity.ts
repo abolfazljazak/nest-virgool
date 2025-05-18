@@ -16,6 +16,7 @@ import { BlogLikesEntity } from "src/modules/blog/entities/like.entity";
 import { BlogBookmarkEntity } from "src/modules/blog/entities/bookmark.entity";
 import { BlogCommentEntity } from "src/modules/blog/entities/comment.entity";
 import { ImageEntity } from "src/modules/image/entities/image.entity";
+import { Roles } from "@common/enum/role.enum";
 
 @Entity(EntityNames.User)
 export class UserEntity extends BaseEntity {
@@ -43,37 +44,40 @@ export class UserEntity extends BaseEntity {
   @Column()
   password: string;
 
+  @Column({ default: Roles.User })
+  role: string;
+
   @Column()
   otpId: number;
-  
+
   @OneToOne(() => OtpEntity, (otp) => otp.user, { nullable: true })
   @JoinColumn()
   otp: OtpEntity;
-  
+
   @OneToOne(() => ProfileEntity, (profile) => profile.user, { nullable: true })
   profile: ProfileEntity;
-  
+
   @Column({ nullable: true })
   profileId: number;
 
-  @OneToMany(() => BlogEntity, blog => blog.author)
-  blogs: BlogEntity[]
+  @OneToMany(() => BlogEntity, (blog) => blog.author)
+  blogs: BlogEntity[];
 
-  @OneToMany(() => BlogLikesEntity, like => like.user)
-  blog_likes: BlogLikesEntity[]
+  @OneToMany(() => BlogLikesEntity, (like) => like.user)
+  blog_likes: BlogLikesEntity[];
 
-  @OneToMany(() => BlogBookmarkEntity, bookmark => bookmark.user)
-  blog_bookmarks: BlogBookmarkEntity[]
+  @OneToMany(() => BlogBookmarkEntity, (bookmark) => bookmark.user)
+  blog_bookmarks: BlogBookmarkEntity[];
 
-  @OneToMany(() => BlogCommentEntity, comment => comment.user)
-  blog_comments: BlogCommentEntity[]
+  @OneToMany(() => BlogCommentEntity, (comment) => comment.user)
+  blog_comments: BlogCommentEntity[];
 
-  @OneToMany(() => ImageEntity, image => image.user)
-  images: ImageEntity[]
+  @OneToMany(() => ImageEntity, (image) => image.user)
+  images: ImageEntity[];
 
   @CreateDateColumn()
   created_at: Date;
-  
+
   @UpdateDateColumn()
   updated_at: Date;
 }
