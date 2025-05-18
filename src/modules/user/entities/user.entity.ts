@@ -73,10 +73,10 @@ export class UserEntity extends BaseEntity {
   @OneToMany(() => BlogCommentEntity, (comment) => comment.user)
   blog_comments: BlogCommentEntity[];
 
-  @OneToMany(() => FollowEntity, (follow) => follow.following)
+  @OneToMany(() => FollowEntity, (follow) => follow.follower)
   following: FollowEntity[];
 
-  @OneToMany(() => FollowEntity, (follow) => follow.follower)
+  @OneToMany(() => FollowEntity, (follow) => follow.following)
   followers: FollowEntity[];
 
   @OneToMany(() => ImageEntity, (image) => image.user)
