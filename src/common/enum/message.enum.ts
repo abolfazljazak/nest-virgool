@@ -14,6 +14,7 @@ export enum AuthMessage {
   TryAgain = "لطفا دوباره تلاش کنید.",
   LoginAgain = "مجدد وارد حساب کاربری خود شوید.",
   LoginRequired = "وارد حساب کاربری خود شوید.",
+  Blocked = "حساب کاربری شما مسدود شده است.",
 }
 
 export enum NotFoundMessage {
@@ -43,6 +44,8 @@ export enum PublicMessage {
   CreateComment = "نظر شما ثبت شد.",
   Follow = "فالو شد.",
   UnFollow = "آنفالو شد",
+  Blocked = "حساب کاربری مسدود شد.",
+  UnBlocked = "حساب کاربری از مسدودی درآمد.",
 }
 
 export enum ConflictMessage {
