@@ -31,6 +31,13 @@ import { CookieKeys } from "@common/enum/cookie.enum";
 import { AuthMethod } from "../auth/enums/method.enum";
 import { FollowEntity } from "./entities/follow.entity";
 import { EntityNames } from "@common/enum/entity.enum";
+import { PaginationDto } from "@common/dtos/pagination.dto";
+import {
+  paginationGenerator,
+  paginationSolver,
+} from "@common/utils/pagination.util";
+import { UserBlockDto } from "../auth/dto/auth.dto";
+import { UserStatus } from "./enums/status.enum";
 
 @Injectable({ scope: Scope.REQUEST })
 export class UserService {
@@ -256,6 +263,89 @@ export class UserService {
         followingId,
         followerId: userId,
       });
+    }
+    return {
+      message,
+    };
+  }
+
+  async following(paginationDto: PaginationDto) {
+    const { id: userId } = this.request.user;
+    const { limit, page, skip } = paginationSolver(paginationDto);
+    const [following, count] = await this.followRepository.findAndCount({
+      where: { followerId: userId },
+      relations: {
+        follower: {
+          profile: true,
+        },
+      },
+      select: {
+        id: true,
+        follower: {
+          id: true,
+          profile: {
+            id: true,
+            nick_name: true,
+            bio: true,
+            image_profile: true,
+            bg_image: true,
+          },
+        },
+      },
+      skip,
+      take: limit,
+    });
+    return {
+      pagination: paginationGenerator(count, page, limit),
+      following,
+    };
+  }
+
+  async followers(paginationDto: PaginationDto) {
+    const { id: userId } = this.request.user;
+    const { limit, page, skip } = paginationSolver(paginationDto);
+    const [followers, count] = await this.followRepository.findAndCount({
+      where: { followingId: userId },
+      relations: {
+        follower: {
+          profile: true,
+        },
+      },
+      select: {
+        id: true,
+        follower: {
+          id: true,
+          profile: {
+            id: true,
+            nick_name: true,
+            bio: true,
+            image_profile: true,
+            bg_image: true,
+          },
+        },
+      },
+      skip,
+      take: limit,
+    });
+    return {
+      pagination: paginationGenerator(count, page, limit),
+      followers,
+    };
+  }
+
+  async block(blockDto: UserBlockDto) {
+    const { userId } = blockDto;
+    const user = await this.userRepository.findOneBy({ id: userId });
+    if (!user) throw new NotFoundException(NotFoundMessage.NotFoundUser);
+    
+    let message = null;
+    if (user.status === UserStatus.Block) {
+      message = PublicMessage.UnBlocked;
+      await this.userRepository.update({id: userId}, {status: UserStatus.Active});
+    } else {
+      message = PublicMessage.Blocked;
+      await this.userRepository.update({id: userId}, {status: UserStatus.Block});
+
     }
     return {
       message,

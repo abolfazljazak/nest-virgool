@@ -6,6 +6,7 @@ import {
   Patch,
   Post,
   Put,
+  Query,
   Res,
   UploadedFiles,
   UseInterceptors,
@@ -26,8 +27,12 @@ import { Response } from "express";
 import { CookieKeys } from "@common/enum/cookie.enum";
 import { CookiesOptionsToken } from "@common/utils/cookie.util";
 import { PublicMessage } from "@common/enum/message.enum";
-import { CheckOtpDto } from "../auth/dto/auth.dto";
+import { CheckOtpDto, UserBlockDto } from "../auth/dto/auth.dto";
 import { AuthDecorator } from "@common/decorators/auth.decorator";
+import { Pagination } from "@common/decorators/pagination.decorator";
+import { PaginationDto } from "@common/dtos/pagination.dto";
+import { CanAccess } from "@common/decorators/role.decorator";
+import { Roles } from "@common/enum/role.enum";
 
 @Controller("user")
 @ApiTags("User")
@@ -115,5 +120,24 @@ export class UserController {
   @ApiParam({ name: "followingId" })
   follow(@Param("followingId") followingId: number) {
     return this.userService.followToggle(followingId);
+  }
+
+  @Get("followers")
+  @Pagination()
+  followers(@Query() paginationDto: PaginationDto) {
+    return this.userService.followers(paginationDto)
+  }
+
+  @Get("following")
+  @Pagination()
+  following(@Query() paginationDto: PaginationDto) {
+    return this.userService.following(paginationDto)
+  }
+
+  @Post("block")
+  @CanAccess(Roles.Admin)
+  @ApiConsumes(SwaggerConsumes.UrlEncoded, SwaggerConsumes.Json)
+  block(@Body() blockDto: UserBlockDto) {
+    return this.userService.block(blockDto)
   }
 }
